@@ -1,7 +1,7 @@
 .PHONY: clean build run stop inspect
 
-IMAGE_NAME = nikos/alpine-python3-flask
-CONTAINER_NAME = flask-demoapp
+IMAGE_NAME = nikos/debian-python3-flask
+CONTAINER_NAME = flask-demoapp-debian
 
 build:
 	docker build -t $(IMAGE_NAME) .
@@ -12,7 +12,7 @@ release:
 		--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` -t $(IMAGE_NAME) .
 
 run:
-	docker run --rm -p 5000:5000 --name $(CONTAINER_NAME) $(IMAGE_NAME)
+	docker run --rm -p 5050:5050 --name $(CONTAINER_NAME) $(IMAGE_NAME)
 
 inspect:
 	docker inspect $(CONTAINER_NAME)

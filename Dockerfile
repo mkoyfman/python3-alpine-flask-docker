@@ -1,24 +1,38 @@
-FROM python:3-alpine
-MAINTAINER Niko Schmuck <niko@nava.de> 
+# ---- Stage 1: Build Stage ----
+FROM python:3-slim-bookworm AS builder
 
-ARG BUILD_DATE
-ARG VCS_REF
+WORKDIR /app
 
-# Set labels (see https://microbadger.com/labels)
+# Install build dependencies only for compiling any native modules
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential gcc && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt ./
+
+# Install Python deps to a temporary location
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# ---- Stage 2: Runtime Image ----
+FROM python:3-slim-bookworm
+
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.vcs-ref=$VCS_REF \
       org.label-schema.vcs-url="https://github.com/nikos/python3-alpine-flask-docker"
 
+ARG BUILD_DATE
+ARG VCS_REF
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY requirements.txt /usr/src/app/
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy only installed packages and your app code
+COPY --from=builder /install /usr/local
+COPY . .
 
-COPY . /usr/src/app
 
-# Expose the Flask port
-EXPOSE 5000
+RUN useradd --create-home --shell /bin/bash appuser
+USER appuser
 
-CMD [ "python", "./app.py" ]
+EXPOSE 5050
+CMD ["python", "app.py"]
