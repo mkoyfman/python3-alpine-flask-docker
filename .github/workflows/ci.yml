@@ -1,4 +1,4 @@
-name: CI – Build, Scan & Push to Docker Hub
+name: CI – Build, Scan & Publish to Docker Hub
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
     branches:
       - master
 
-# Set your Docker Hub repo as an env var
 env:
   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/python3-alpine-flask
 
@@ -17,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
+      - name: Check out code
         uses: actions/checkout@v3
 
       - name: Set up QEMU (for multi-arch)
@@ -45,6 +44,7 @@ jobs:
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Scan image for vulnerabilities
-        uses: docker/scan-action@v2
+        uses: docker/scout-action@v1
         with:
+          command: cves
           image: ${{ env.IMAGE_NAME }}:latest
