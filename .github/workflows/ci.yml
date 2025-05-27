@@ -3,10 +3,10 @@ name: CI – Build, Scan & Push to Docker Hub
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 # Set your Docker Hub repo as an env var
 env:
