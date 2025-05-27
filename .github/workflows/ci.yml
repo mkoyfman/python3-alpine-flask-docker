@@ -9,7 +9,7 @@ on:
       - master
 
 env:
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/python3-alpine-flask
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/python3-debian-flask
 
 jobs:
   build-and-publish:
