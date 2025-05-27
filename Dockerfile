@@ -3,10 +3,6 @@ FROM python:3-slim-bookworm AS builder
 
 WORKDIR /app
 
-# Install build dependencies only for compiling any native modules
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential gcc && \
-    rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
 
