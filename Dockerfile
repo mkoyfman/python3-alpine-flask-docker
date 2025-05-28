@@ -14,8 +14,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
-# Optional: trim unneeded Python modules
-RUN rm -rf /usr/lib/python3.*/test /usr/lib/python3.*/tkinter /usr/lib/python3.*/idlelib
+
 
 # Create a non-root user and switch to it
 RUN useradd --create-home appuser
